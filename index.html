@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>ULTIMATE PLATFORM</title>
+<title>David Goggins </title>
 
 <style>
 body{
@@ -11,7 +11,7 @@ body{
   transition:0.3s;
 }
 
-/* LOGIN */
+/* LOGIN SCREEN */
 #login{
   position:fixed;
   width:100%;
@@ -29,16 +29,16 @@ body{
 .light{background:#f4f4f4;color:#000;}
 .dark{background:#1e1e1e;color:#fff;}
 
-/* SIDEBAR */
-.sidebar{
+/* MENU */
+.menu{
   position:fixed;
-  width:230px;
+  width:200px;
   height:100vh;
   background:#111;
   padding-top:20px;
 }
 
-.sidebar button{
+.menu button{
   width:100%;
   padding:10px;
   background:none;
@@ -47,17 +47,16 @@ body{
   cursor:pointer;
 }
 
-.sidebar button:hover{
+.menu button:hover{
   background:#1abc9c;
 }
 
 /* CONTENT */
 .content{
-  margin-left:240px;
+  margin-left:210px;
   padding:20px;
 }
 
-/* CARD */
 .card{
   background:#fff;
   padding:15px;
@@ -67,16 +66,6 @@ body{
 
 .dark .card{background:#333;color:white;}
 
-/* POST */
-.post{
-  background:#222;
-  color:white;
-  padding:10px;
-  margin:10px 0;
-  border-radius:10px;
-}
-
-/* INPUT */
 input,button{
   padding:10px;
   margin:5px;
@@ -87,16 +76,17 @@ input,button{
 
 <body class="light">
 
-<!-- LOGIN -->
+<!-- 🔐 LOGIN -->
 <div id="login">
-  <h1>🔐 LOGIN</h1>
-  <input id="u" placeholder="admin">
-  <input id="p" type="password" placeholder="1234">
-  <button onclick="login()">Giriş</button>
+  <h1>🔐 Giriş</h1>
+  <input id="u" placeholder="Kullanıcı adı">
+  <input id="p" type="password" placeholder="Şifre">
+  <button onclick="login()">Giriş Yap</button>
+  <p id="err"></p>
 </div>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+<!-- MENU -->
+<div class="menu">
   <button onclick="show('feed')">📱 Feed</button>
   <button onclick="show('games')">🎮 Oyunlar</button>
   <button onclick="show('tools')">🧰 Araçlar</button>
@@ -108,12 +98,12 @@ input,button{
 
 <!-- FEED -->
 <div id="feed">
-  <h1>📱 Social Feed</h1>
+  <h1>📱 Feed</h1>
 
-  <input id="postText" placeholder="Ne düşünüyorsun?">
+  <input id="post">
   <button onclick="addPost()">Paylaş</button>
 
-  <div id="feedBox"></div>
+  <div id="posts"></div>
 </div>
 
 <!-- GAMES -->
@@ -122,36 +112,30 @@ input,button{
   <h1>🎮 Oyunlar</h1>
 
   <div class="card">
-    🎯 Tahmin Oyunu
-    <input id="g">
-    <button onclick="guess()">Oyna</button>
+    🎯 Tahmin
+    <input id="guess">
+    <button onclick="game()">Oyna</button>
     <p id="gRes"></p>
   </div>
 
   <div class="card">
     ⚡ Refleks
     <button onclick="startR()">Başlat</button>
-    <button id="clickBtn" onclick="clickR()" style="display:none">Tıkla!</button>
+    <button id="click" onclick="clickR()" style="display:none">Tıkla</button>
     <p id="rRes"></p>
   </div>
 
   <div class="card">
     🎲 Şans
     <button onclick="luck()">Çevir</button>
-    <p id="luckRes"></p>
-  </div>
-
-  <div class="card">
-    🧠 Hafıza
-    <button onclick="memShow()">Göster</button>
-    <input id="memIn">
-    <button onclick="memCheck()">Kontrol</button>
+    <p id="luck"></p>
   </div>
 
 </div>
 
 <!-- TOOLS -->
 <div id="tools" style="display:none">
+
   <h1>🧰 Araçlar</h1>
 
   🎲 <button onclick="dice()">Zar</button>
@@ -160,16 +144,21 @@ input,button{
   🔐 <button onclick="gen()">Şifre</button>
   <p id="pass"></p>
 
-  📝 <input id="note"><button onclick="noteAdd()">Not</button>
-  <ul id="notes"></ul>
+  📝 <input id="note">
+  <button onclick="note()">Not Ekle</button>
+  <ul id="list"></ul>
+
 </div>
 
 <!-- ROBOT -->
 <div id="robot" style="display:none">
+
   <h1>🤖 Robot</h1>
+
   <input id="msg">
   <button onclick="bot()">Gönder</button>
   <p id="reply"></p>
+
 </div>
 
 </div>
@@ -178,20 +167,21 @@ input,button{
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 let num = Math.floor(Math.random()*10);
-let memory="";
-let startTime;
+let start;
 
-// LOGIN
+/* 🔐 LOGIN (SENİN İSTEDİĞİN) */
 function login(){
   let u=document.getElementById("u").value;
   let p=document.getElementById("p").value;
 
-  if(u==="admin" && p==="1234"){
+  if(u==="Yasin" && p==="3169"){
     document.getElementById("login").style.display="none";
+  } else {
+    document.getElementById("err").innerText="Hatalı giriş ❌";
   }
 }
 
-// NAV
+/* NAV */
 function show(id){
   ["feed","games","tools","robot"].forEach(x=>{
     document.getElementById(x).style.display="none";
@@ -201,32 +191,24 @@ function show(id){
 
 /* FEED */
 function addPost(){
-  let t=document.getElementById("postText").value;
-
-  posts.unshift({text:t,likes:0});
+  let t=document.getElementById("post").value;
+  posts.unshift({text:t});
   localStorage.setItem("posts",JSON.stringify(posts));
   render();
 }
 
 function render(){
-  let box=document.getElementById("feedBox");
+  let box=document.getElementById("posts");
   box.innerHTML="";
-
-  posts.forEach((p,i)=>{
-    box.innerHTML+=`
-      <div class="post">
-        ${p.text}<br>
-        ❤️ ${p.likes}
-      </div>
-    `;
+  posts.forEach(p=>{
+    box.innerHTML+="<div class='card'>"+p.text+"</div>";
   });
 }
-
 render();
 
-/* GAME 1 */
-function guess(){
-  let x=document.getElementById("g").value;
+/* GAME */
+function game(){
+  let x=document.getElementById("guess").value;
   document.getElementById("gRes").innerText =
   (x==num)?"Doğru 🎉":"Yanlış 😅";
   num=Math.floor(Math.random()*10);
@@ -234,53 +216,40 @@ function guess(){
 
 /* REFLEX */
 function startR(){
-  document.getElementById("clickBtn").style.display="none";
+  document.getElementById("click").style.display="none";
   setTimeout(()=>{
-    document.getElementById("clickBtn").style.display="block";
-    startTime=Date.now();
+    document.getElementById("click").style.display="block";
+    start=Date.now();
   },Math.random()*2000+1000);
 }
 
 function clickR(){
   document.getElementById("rRes").innerText =
-  "Süre: " + (Date.now()-startTime) + " ms";
+  (Date.now()-start)+" ms";
 }
 
 /* LUCK */
 function luck(){
-  let r=Math.random();
-  document.getElementById("luckRes").innerText=
-  r<0.3?"😢":"r<0.6?"🙂":"🎉";
-}
-
-/* MEMORY */
-function memShow(){
-  let w=["kedi","araba","uzay"];
-  memory=w[Math.floor(Math.random()*w.length)];
-  alert(memory);
-}
-
-function memCheck(){
-  let v=document.getElementById("memIn").value;
-  alert(v===memory?"Doğru":"Yanlış");
+  document.getElementById("luck").innerText =
+  Math.random()<0.5?"😢":"🎉";
 }
 
 /* TOOLS */
 function dice(){
-  document.getElementById("dice").innerText=
+  document.getElementById("dice").innerText =
   Math.floor(Math.random()*6)+1;
 }
 
 function gen(){
-  document.getElementById("pass").innerText=
+  document.getElementById("pass").innerText =
   Math.random().toString(36).slice(-8);
 }
 
-function noteAdd(){
+function note(){
   let v=document.getElementById("note").value;
   let li=document.createElement("li");
   li.innerText=v;
-  document.getElementById("notes").appendChild(li);
+  document.getElementById("list").appendChild(li);
 }
 
 /* ROBOT */
@@ -288,11 +257,9 @@ function bot(){
   let m=document.getElementById("msg").value.toLowerCase();
 
   let r="";
-
   if(m.includes("merhaba")) r="Selam 😎";
-  else if(m.includes("oyun")) r="Oyunlar açık 🎮";
   else if(m.includes("saat")) r=new Date().toLocaleTimeString();
-  else r="Bilmiyorum 🤔";
+  else r="Anlamadım 🤔";
 
   document.getElementById("reply").innerText=r;
 }
