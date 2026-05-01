@@ -2,198 +2,228 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>FINAL BOSS SITE</title>
+<title>FINAL LEVEL APP</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
   transition:0.3s;
-  scroll-behavior:smooth;
 }
 
+/* THEMES */
 .light{background:#f4f4f4;color:#000;}
-.dark{background:#121212;color:#fff;}
+.dark{background:#1e1e1e;color:#fff;}
 
-nav{
+/* LOGIN */
+#login{
   position:fixed;
-  top:0;
   width:100%;
+  height:100%;
   background:#111;
-  display:flex;
-  justify-content:center;
-}
-
-nav a{
   color:white;
-  padding:15px;
-  text-decoration:none;
-}
-nav a:hover{background:#1abc9c;}
-
-header{
-  height:100vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(120deg,#3498db,#8e44ad);
-  color:white;
 }
 
-section{
-  width:80%;
-  margin:80px auto;
-}
+/* DASHBOARD */
+#app{display:none;}
 
-.card{
-  background:white;
-  padding:20px;
-  margin:15px 0;
-  border-radius:10px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.2);
-}
-
-.dark .card{background:#1e1e1e;}
-
-button{
-  padding:10px;
-  border:none;
-  background:#3498db;
-  color:white;
-  cursor:pointer;
-  border-radius:5px;
-}
-
-button:hover{background:#1abc9c;}
-
-.popup{
-  display:none;
+/* SIDEBAR */
+.sidebar{
   position:fixed;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
+  width:200px;
+  height:100vh;
+  background:#000;
+  padding-top:20px;
 }
 
-.popup-content{
-  background:white;
-  width:300px;
-  margin:15% auto;
+.sidebar button{
+  width:100%;
+  padding:10px;
+  background:none;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+.sidebar button:hover{
+  background:#1abc9c;
+}
+
+/* CONTENT */
+.content{
+  margin-left:210px;
   padding:20px;
-  text-align:center;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  padding:15px;
+  margin:10px 0;
   border-radius:10px;
 }
 
+.dark .card{background:#333;color:white;}
+
+/* INPUT */
 input{
   padding:10px;
   margin:5px;
-  width:80%;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#000;
+  color:#fff;
+  padding:10px;
+  display:none;
 }
 </style>
 </head>
 
 <body class="light">
 
-<nav>
-  <a href="#home">Ana</a>
-  <a href="#game">Oyun</a>
-  <a href="#quiz">Quiz</a>
-  <a href="#contact">İletişim</a>
-</nav>
+<!-- LOGIN -->
+<div id="login">
+  <h2>🔐 Giriş</h2>
+  <input id="u" placeholder="kullanıcı">
+  <input id="p" type="password" placeholder="şifre">
+  <button onclick="login()">Giriş Yap</button>
+</div>
 
-<header id="home">
-  <h1>🔥 FINAL BOSS SITE</h1>
-  <p id="typing"></p>
+<!-- APP -->
+<div id="app">
 
-  <button onclick="mode()">🌙 Mod</button>
-</header>
+<div class="sidebar">
+  <button onclick="show('home')">🏠 Ana</button>
+  <button onclick="show('game')">🎮 Oyun</button>
+  <button onclick="show('quiz')">🧠 Quiz</button>
+  <button onclick="show('notes')">📝 Notlar</button>
+  <button onclick="theme()">🌙 Tema</button>
+</div>
 
-<section id="game">
-  <h2>🎮 Mini Oyun</h2>
+<div class="content">
+
+<!-- HOME -->
+<div id="home">
+  <h1>Dashboard</h1>
+
+  <div class="card">👤 Kullanıcı: Admin</div>
+  <div class="card">⏰ Saat: <span id="time"></span></div>
+</div>
+
+<!-- GAME -->
+<div id="game" style="display:none">
+  <h1>🎮 Oyun</h1>
   <div class="card">
-    <p>0–10 arası sayı tahmin et:</p>
-    <input id="guess">
-    <button onclick="game()">Tahmin Et</button>
-    <p id="gameResult"></p>
-  </div>
-</section>
-
-<section id="quiz">
-  <h2>🧠 Quiz</h2>
-  <div class="card">
-    <p>HTML ne demek?</p>
-    <button onclick="q(1)">Doğru</button>
-    <button onclick="q(0)">Yanlış</button>
-    <p id="score">Skor: 0</p>
-  </div>
-</section>
-
-<section id="contact">
-  <h2>📧 İletişim</h2>
-  <div class="card">
-    <input id="name" placeholder="Ad">
-    <input id="mail" placeholder="E-posta">
-    <button onclick="send()">Gönder</button>
-  </div>
-</section>
-
-<!-- POPUP -->
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <h3>✔ Gönderildi</h3>
-    <button onclick="closeP()">OK</button>
+    <input id="g">
+    <button onclick="play()">Tahmin</button>
+    <p id="r"></p>
+    <p>Skor: <span id="s">0</span></p>
   </div>
 </div>
 
+<!-- QUIZ -->
+<div id="quiz" style="display:none">
+  <h1>🧠 Quiz</h1>
+  <div class="card">
+    HTML nedir?<br>
+    <button onclick="q(1)">Dil</button>
+    <button onclick="q(0)">Oyun</button>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div id="notes" style="display:none">
+  <h1>📝 Notlar</h1>
+  <div class="card">
+    <input id="n">
+    <button onclick="add()">Ekle</button>
+    <ul id="list"></ul>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
 
-let t="Bu site FINAL BOSS seviyesidir 😎";
-let i=0;
+let score=0;
+let num=Math.floor(Math.random()*10);
 
-function type(){
-  if(i<t.length){
-    document.getElementById("typing").innerHTML+=t[i];
-    i++;
-    setTimeout(type,50);
+// LOGIN
+function login(){
+  if(document.getElementById("u").value){
+    document.getElementById("login").style.display="none";
+    document.getElementById("app").style.display="block";
   }
 }
-type();
 
-// DARK MODE
-function mode(){
+// SHOW PAGES
+function show(id){
+  let d=["home","game","quiz","notes"];
+  d.forEach(x=>document.getElementById(x).style.display="none");
+  document.getElementById(id).style.display="block";
+}
+
+// GAME
+function play(){
+  let x=document.getElementById("g").value;
+
+  if(x==num){
+    score++;
+    document.getElementById("r").innerText="Doğru 🎉";
+  }else{
+    document.getElementById("r").innerText="Yanlış 😅";
+  }
+
+  document.getElementById("s").innerText=score;
+  num=Math.floor(Math.random()*10);
+}
+
+// QUIZ
+function q(a){
+  notify(a==1?"Doğru ✔":"Yanlış ❌");
+}
+
+// NOTES
+function add(){
+  let v=document.getElementById("n").value;
+  let li=document.createElement("li");
+  li.innerText=v;
+  document.getElementById("list").appendChild(li);
+  notify("Not eklendi");
+}
+
+// THEME
+function theme(){
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
 }
 
-// OYUN
-let rnd = Math.floor(Math.random()*10);
+// CLOCK
+setInterval(()=>{
+  let d=new Date();
+  document.getElementById("time").innerText=
+  d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
+},1000);
 
-function game(){
-  let g=document.getElementById("guess").value;
-
-  if(g==rnd){
-    document.getElementById("gameResult").innerText="Doğru bildin 🎉";
-  }else{
-    document.getElementById("gameResult").innerText="Yanlış 😅 sayı: "+rnd;
-  }
-  rnd=Math.floor(Math.random()*10);
-}
-
-// QUIZ
-let score=0;
-
-function q(a){
-  if(a==1) score++;
-  document.getElementById("score").innerText="Skor: "+score;
-}
-
-// FORM
-function send(){
-  document.getElementById("popup").style.display="block";
-}
-
-function closeP(){
-  document.getElementById("popup").style.display="none";
+// NOTIFY
+function notify(m){
+  let t=document.getElementById("toast");
+  t.innerText=m;
+  t.style.display="block";
+  setTimeout(()=>t.style.display="none",1500);
 }
 
 </script>
