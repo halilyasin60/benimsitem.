@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>FINAL WEB APP</title>
+<title>ULTIMATE PLATFORM</title>
 
 <style>
 body{
@@ -12,7 +12,7 @@ body{
 }
 
 /* LOGIN */
-#loginScreen{
+#login{
   position:fixed;
   width:100%;
   height:100%;
@@ -25,14 +25,14 @@ body{
   z-index:9999;
 }
 
-/* THEMES */
+/* THEME */
 .light{background:#f4f4f4;color:#000;}
 .dark{background:#1e1e1e;color:#fff;}
 
 /* SIDEBAR */
 .sidebar{
   position:fixed;
-  width:220px;
+  width:230px;
   height:100vh;
   background:#111;
   padding-top:20px;
@@ -53,7 +53,7 @@ body{
 
 /* CONTENT */
 .content{
-  margin-left:230px;
+  margin-left:240px;
   padding:20px;
 }
 
@@ -67,15 +67,20 @@ body{
 
 .dark .card{background:#333;color:white;}
 
-/* TOAST */
-.toast{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#000;
-  color:#fff;
+/* POST */
+.post{
+  background:#222;
+  color:white;
   padding:10px;
-  display:none;
+  margin:10px 0;
+  border-radius:10px;
+}
+
+/* INPUT */
+input,button{
+  padding:10px;
+  margin:5px;
+  width:100%;
 }
 </style>
 </head>
@@ -83,18 +88,17 @@ body{
 <body class="light">
 
 <!-- LOGIN -->
-<div id="loginScreen">
-  <h1>🔐 Giriş</h1>
-  <input id="user" placeholder="Kullanıcı" style="padding:10px;margin:5px;">
-  <input id="pass" type="password" placeholder="Şifre" style="padding:10px;margin:5px;">
-  <button onclick="login()">Giriş Yap</button>
-  <p id="err"></p>
+<div id="login">
+  <h1>🔐 LOGIN</h1>
+  <input id="u" placeholder="admin">
+  <input id="p" type="password" placeholder="1234">
+  <button onclick="login()">Giriş</button>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
-  <button onclick="show('home')">🏠 Dashboard</button>
-  <button onclick="show('game')">🎮 Oyun</button>
-  <button onclick="show('quiz')">🧠 Quiz</button>
+  <button onclick="show('feed')">📱 Feed</button>
+  <button onclick="show('games')">🎮 Oyunlar</button>
   <button onclick="show('tools')">🧰 Araçlar</button>
   <button onclick="show('robot')">🤖 Robot</button>
   <button onclick="theme()">🌙 Tema</button>
@@ -102,189 +106,202 @@ body{
 
 <div class="content">
 
-<!-- DASHBOARD -->
-<div id="home">
-  <h1>📊 Dashboard</h1>
-  <div class="card">👤 Admin</div>
-  <div class="card">🎯 Skor: <span id="score">0</span></div>
+<!-- FEED -->
+<div id="feed">
+  <h1>📱 Social Feed</h1>
+
+  <input id="postText" placeholder="Ne düşünüyorsun?">
+  <button onclick="addPost()">Paylaş</button>
+
+  <div id="feedBox"></div>
 </div>
 
-<!-- GAME -->
-<div id="game" style="display:none">
-  <h1>🎮 Oyun</h1>
+<!-- GAMES -->
+<div id="games" style="display:none">
+
+  <h1>🎮 Oyunlar</h1>
+
   <div class="card">
+    🎯 Tahmin Oyunu
     <input id="g">
-    <button onclick="game()">Tahmin</button>
-    <p id="r"></p>
+    <button onclick="guess()">Oyna</button>
+    <p id="gRes"></p>
   </div>
-</div>
 
-<!-- QUIZ -->
-<div id="quiz" style="display:none">
-  <h1>🧠 Quiz</h1>
   <div class="card">
-    HTML nedir?<br>
-    <button onclick="q(1)">Dil</button>
-    <button onclick="q(0)">Oyun</button>
+    ⚡ Refleks
+    <button onclick="startR()">Başlat</button>
+    <button id="clickBtn" onclick="clickR()" style="display:none">Tıkla!</button>
+    <p id="rRes"></p>
   </div>
+
+  <div class="card">
+    🎲 Şans
+    <button onclick="luck()">Çevir</button>
+    <p id="luckRes"></p>
+  </div>
+
+  <div class="card">
+    🧠 Hafıza
+    <button onclick="memShow()">Göster</button>
+    <input id="memIn">
+    <button onclick="memCheck()">Kontrol</button>
+  </div>
+
 </div>
 
 <!-- TOOLS -->
 <div id="tools" style="display:none">
   <h1>🧰 Araçlar</h1>
 
-  <div class="card">
-    🎲 Zar
-    <button onclick="dice()">At</button>
-    <p id="dice_r"></p>
-  </div>
+  🎲 <button onclick="dice()">Zar</button>
+  <p id="dice"></p>
 
-  <div class="card">
-    ⏱ Sayaç
-    <button onclick="start()">Başlat</button>
-    <p id="t">0</p>
-  </div>
+  🔐 <button onclick="gen()">Şifre</button>
+  <p id="pass"></p>
 
-  <div class="card">
-    🔐 Şifre
-    <button onclick="gen()">Üret</button>
-    <p id="p"></p>
-  </div>
-
-  <div class="card">
-    📝 Not
-    <input id="n">
-    <button onclick="add()">Ekle</button>
-    <ul id="list"></ul>
-  </div>
+  📝 <input id="note"><button onclick="noteAdd()">Not</button>
+  <ul id="notes"></ul>
 </div>
 
 <!-- ROBOT -->
 <div id="robot" style="display:none">
   <h1>🤖 Robot</h1>
-  <div class="card">
-    <input id="msg">
-    <button onclick="robot()">Gönder</button>
-    <p id="reply"></p>
-  </div>
+  <input id="msg">
+  <button onclick="bot()">Gönder</button>
+  <p id="reply"></p>
 </div>
 
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
 
-let score = localStorage.getItem("score") || 0;
+let posts = JSON.parse(localStorage.getItem("posts")) || [];
 let num = Math.floor(Math.random()*10);
-let t=0;
-let interval;
+let memory="";
+let startTime;
 
 // LOGIN
 function login(){
-  let u=document.getElementById("user").value;
-  let p=document.getElementById("pass").value;
+  let u=document.getElementById("u").value;
+  let p=document.getElementById("p").value;
 
   if(u==="admin" && p==="1234"){
-    document.getElementById("loginScreen").style.display="none";
-    localStorage.setItem("login","true");
-  }else{
-    document.getElementById("err").innerText="Hatalı ❌";
+    document.getElementById("login").style.display="none";
   }
-}
-
-if(localStorage.getItem("login")==="true"){
-  document.getElementById("loginScreen").style.display="none";
 }
 
 // NAV
 function show(id){
-  ["home","game","quiz","tools","robot"].forEach(x=>{
+  ["feed","games","tools","robot"].forEach(x=>{
     document.getElementById(x).style.display="none";
   });
   document.getElementById(id).style.display="block";
 }
 
-// GAME
-function game(){
+/* FEED */
+function addPost(){
+  let t=document.getElementById("postText").value;
+
+  posts.unshift({text:t,likes:0});
+  localStorage.setItem("posts",JSON.stringify(posts));
+  render();
+}
+
+function render(){
+  let box=document.getElementById("feedBox");
+  box.innerHTML="";
+
+  posts.forEach((p,i)=>{
+    box.innerHTML+=`
+      <div class="post">
+        ${p.text}<br>
+        ❤️ ${p.likes}
+      </div>
+    `;
+  });
+}
+
+render();
+
+/* GAME 1 */
+function guess(){
   let x=document.getElementById("g").value;
-
-  if(x==num){
-    score++;
-    notify("Doğru 🎉");
-  }else{
-    notify("Yanlış 😅");
-  }
-
-  localStorage.setItem("score",score);
-  document.getElementById("score").innerText=score;
-
+  document.getElementById("gRes").innerText =
+  (x==num)?"Doğru 🎉":"Yanlış 😅";
   num=Math.floor(Math.random()*10);
 }
 
-// QUIZ
-function q(a){
-  notify(a==1?"Doğru ✔":"Yanlış ❌");
+/* REFLEX */
+function startR(){
+  document.getElementById("clickBtn").style.display="none";
+  setTimeout(()=>{
+    document.getElementById("clickBtn").style.display="block";
+    startTime=Date.now();
+  },Math.random()*2000+1000);
 }
 
-// ZAR
+function clickR(){
+  document.getElementById("rRes").innerText =
+  "Süre: " + (Date.now()-startTime) + " ms";
+}
+
+/* LUCK */
+function luck(){
+  let r=Math.random();
+  document.getElementById("luckRes").innerText=
+  r<0.3?"😢":"r<0.6?"🙂":"🎉";
+}
+
+/* MEMORY */
+function memShow(){
+  let w=["kedi","araba","uzay"];
+  memory=w[Math.floor(Math.random()*w.length)];
+  alert(memory);
+}
+
+function memCheck(){
+  let v=document.getElementById("memIn").value;
+  alert(v===memory?"Doğru":"Yanlış");
+}
+
+/* TOOLS */
 function dice(){
-  document.getElementById("dice_r").innerText=
+  document.getElementById("dice").innerText=
   Math.floor(Math.random()*6)+1;
 }
 
-// SAYAÇ
-function start(){
-  clearInterval(interval);
-  interval=setInterval(()=>{
-    t++;
-    document.getElementById("t").innerText=t;
-  },1000);
-}
-
-// ŞİFRE
 function gen(){
-  document.getElementById("p").innerText=
+  document.getElementById("pass").innerText=
   Math.random().toString(36).slice(-8);
 }
 
-// NOT
-function add(){
-  let v=document.getElementById("n").value;
+function noteAdd(){
+  let v=document.getElementById("note").value;
   let li=document.createElement("li");
   li.innerText=v;
-  document.getElementById("list").appendChild(li);
+  document.getElementById("notes").appendChild(li);
 }
 
-// ROBOT
-function robot(){
+/* ROBOT */
+function bot(){
   let m=document.getElementById("msg").value.toLowerCase();
 
   let r="";
 
   if(m.includes("merhaba")) r="Selam 😎";
-  else if(m.includes("oyun")) r="Oyun aç 🎮";
+  else if(m.includes("oyun")) r="Oyunlar açık 🎮";
   else if(m.includes("saat")) r=new Date().toLocaleTimeString();
-  else r="Anlamadım 🤔";
+  else r="Bilmiyorum 🤔";
 
   document.getElementById("reply").innerText=r;
 }
 
-// THEME
+/* THEME */
 function theme(){
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
 }
-
-// NOTIFY
-function notify(m){
-  let t=document.getElementById("toast");
-  t.innerText=m;
-  t.style.display="block";
-  setTimeout(()=>t.style.display="none",1500);
-}
-
-document.getElementById("score").innerText=score;
 
 </script>
 
