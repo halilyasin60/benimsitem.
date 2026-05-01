@@ -2,13 +2,27 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>PRO MAX WEB APP</title>
+<title>FINAL WEB APP</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
   transition:0.3s;
+}
+
+/* LOGIN */
+#loginScreen{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#111;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
 }
 
 /* THEMES */
@@ -53,12 +67,6 @@ body{
 
 .dark .card{background:#333;color:white;}
 
-/* INPUT */
-input{
-  padding:10px;
-  margin:5px;
-}
-
 /* TOAST */
 .toast{
   position:fixed;
@@ -74,12 +82,20 @@ input{
 
 <body class="light">
 
+<!-- LOGIN -->
+<div id="loginScreen">
+  <h1>🔐 Giriş</h1>
+  <input id="user" placeholder="Kullanıcı" style="padding:10px;margin:5px;">
+  <input id="pass" type="password" placeholder="Şifre" style="padding:10px;margin:5px;">
+  <button onclick="login()">Giriş Yap</button>
+  <p id="err"></p>
+</div>
+
 <div class="sidebar">
   <button onclick="show('home')">🏠 Dashboard</button>
   <button onclick="show('game')">🎮 Oyun</button>
   <button onclick="show('quiz')">🧠 Quiz</button>
   <button onclick="show('tools')">🧰 Araçlar</button>
-  <button onclick="show('stats')">📊 İstatistik</button>
   <button onclick="show('robot')">🤖 Robot</button>
   <button onclick="theme()">🌙 Tema</button>
 </div>
@@ -88,8 +104,8 @@ input{
 
 <!-- DASHBOARD -->
 <div id="home">
-  <h1>📊 DASHBOARD</h1>
-  <div class="card">👤 Kullanıcı: Admin</div>
+  <h1>📊 Dashboard</h1>
+  <div class="card">👤 Admin</div>
   <div class="card">🎯 Skor: <span id="score">0</span></div>
 </div>
 
@@ -143,15 +159,6 @@ input{
   </div>
 </div>
 
-<!-- STATS -->
-<div id="stats" style="display:none">
-  <h1>📊 İSTATİSTİK</h1>
-  <div class="card">
-    Oyun sayısı: <span id="games">0</span><br>
-    Not sayısı: <span id="notes">0</span>
-  </div>
-</div>
-
 <!-- ROBOT -->
 <div id="robot" style="display:none">
   <h1>🤖 Robot</h1>
@@ -169,14 +176,30 @@ input{
 <script>
 
 let score = localStorage.getItem("score") || 0;
-let games = localStorage.getItem("games") || 0;
-let notesCount = localStorage.getItem("notes") || 0;
-
 let num = Math.floor(Math.random()*10);
+let t=0;
+let interval;
+
+// LOGIN
+function login(){
+  let u=document.getElementById("user").value;
+  let p=document.getElementById("pass").value;
+
+  if(u==="admin" && p==="1234"){
+    document.getElementById("loginScreen").style.display="none";
+    localStorage.setItem("login","true");
+  }else{
+    document.getElementById("err").innerText="Hatalı ❌";
+  }
+}
+
+if(localStorage.getItem("login")==="true"){
+  document.getElementById("loginScreen").style.display="none";
+}
 
 // NAV
 function show(id){
-  ["home","game","quiz","tools","stats","robot"].forEach(x=>{
+  ["home","game","quiz","tools","robot"].forEach(x=>{
     document.getElementById(x).style.display="none";
   });
   document.getElementById(id).style.display="block";
@@ -196,10 +219,6 @@ function game(){
   localStorage.setItem("score",score);
   document.getElementById("score").innerText=score;
 
-  games++;
-  localStorage.setItem("games",games);
-  document.getElementById("games").innerText=games;
-
   num=Math.floor(Math.random()*10);
 }
 
@@ -215,9 +234,9 @@ function dice(){
 }
 
 // SAYAÇ
-let t=0;
 function start(){
-  setInterval(()=>{
+  clearInterval(interval);
+  interval=setInterval(()=>{
     t++;
     document.getElementById("t").innerText=t;
   },1000);
@@ -235,15 +254,12 @@ function add(){
   let li=document.createElement("li");
   li.innerText=v;
   document.getElementById("list").appendChild(li);
-
-  notesCount++;
-  localStorage.setItem("notes",notesCount);
-  document.getElementById("notes").innerText=notesCount;
 }
 
 // ROBOT
 function robot(){
   let m=document.getElementById("msg").value.toLowerCase();
+
   let r="";
 
   if(m.includes("merhaba")) r="Selam 😎";
@@ -268,10 +284,7 @@ function notify(m){
   setTimeout(()=>t.style.display="none",1500);
 }
 
-// LOAD
 document.getElementById("score").innerText=score;
-document.getElementById("games").innerText=games;
-document.getElementById("notes").innerText=notesCount;
 
 </script>
 
